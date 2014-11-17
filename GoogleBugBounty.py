@@ -28,6 +28,7 @@ def sendusinggmail():
     content = headers + "\r\n\r\n" + linksend
     session.sendmail(GMAILUSER, SENDTOEMAIL, content)
 
+
 def sevendaycheck():
 
     acq = wikipedia.page('List_of_mergers_and_acquisitions_by_Google')
@@ -65,6 +66,10 @@ SENDTOEMAIL = ''
 companynames = []
 company = ""
 date1 = ""
+
+
+
+sevendaycheck()
 
 if len(companynames) == 0:
     sys.exit()
