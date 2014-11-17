@@ -28,57 +28,43 @@ def sendusinggmail():
     content = headers + "\r\n\r\n" + linksend
     session.sendmail(GMAILUSER, SENDTOEMAIL, content)
 
+def sevendaycheck():
 
+    acq = wikipedia.page('List_of_mergers_and_acquisitions_by_Google')
+    test = acq.html()
+    soup = BeautifulSoup(test)
+    table = soup.find('table', {'class': 'wikitable sortable'})
+    for row in table.findAll('tr'):
+        cells = row.findAll('td')
+        if len(cells) == 8:
+            date1 = cells[1].get_text()
+            company = cells[2].get_text()
+            date1 = re.findall('0000(.*)', date1)
+            str1 = ''.join(date1)
+            try:
+                dt = datetime.datetime.strptime(str1, "%B %d, %Y")
+                dt = dt.date()
+                dt = arrow.get(dt)
+                dt = dt.replace(months=+6)
+                dt = dt.replace(days=-7)
+                dt = dt.date()
+                today = arrow.utcnow()
+                today = today.date()
+                checkdate = dt == today
+                if checkdate:
+                    companynames.append(company.encode('utf-8'))
+                else:
+                    pass
+            except:
+                pass
+
+# Vars
 GMAILUSER = ''
 GMAILPASS = ''
 SENDTOEMAIL = ''
 companynames = []
-
-acq = wikipedia.page('List_of_mergers_and_acquisitions_by_Google')
-test = acq.html()
-soup = BeautifulSoup(test)
-table = soup.find('table', {'class': 'wikitable sortable'})
-
 company = ""
 date1 = ""
-
-for row in table.findAll('tr'):
-    cells = row.findAll('td')
-    if len(cells) == 8:
-        date1 = cells[1].get_text()
-        company = cells[2].get_text()
-
-
-
-    # #print date
-        date1 = re.findall('0000(.*)', date1)
-
-        str1 = ''.join(date1)
-
-        try:
-            dt = datetime.datetime.strptime(str1, "%B %d, %Y")
-
-            dt = dt.date()
-            dt = arrow.get(dt)
-            dt = dt.replace(months=+6)
-            dt = dt.replace(days=-7)
-            dt = dt.date()
-
-            today = arrow.utcnow()
-            today = today.date()
-
-            checkdate = dt == today
-            if checkdate:
-                companynames.append(company.encode('utf-8'))
-                print companynames
-
-            else:
-                pass
-                
-
-        except:
-            pass
-
 
 if len(companynames) == 0:
     sys.exit()
